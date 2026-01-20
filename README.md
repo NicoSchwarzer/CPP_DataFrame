@@ -17,8 +17,8 @@ It supports columns with different data types (`int`, `double`, `string`, `bool`
 
 ## Project Structure
 
-CPP_DataFrame/CPP_DataFrame/
+CPP_DataFrame/
 |-- main.cpp
-|--CPP_DataFrame.cpp
-|--example_data.csv
+|-- CPP_DataFrame.cpp
+|-- example_data.csv
 
