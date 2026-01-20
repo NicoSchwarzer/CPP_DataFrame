@@ -1,0 +1,12 @@
+*.obj
+*.exe
+*.pdb
+*.ipch
+*.user
+*.suo
+*.vcxproj.user
+*.vcxproj.filters
+*.slnx
+x64/
+Debug/
+Release/
