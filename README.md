@@ -18,6 +18,7 @@ It supports columns with different data types (`int`, `double`, `string`, `bool`
 ## Project Structure
 
 CPP_DataFrame/
+
 ├── main.cpp          
 ├── CPP_DataFrame.cpp  
 └── example_data.csv   # Sample CSV to populate the DataFrame
