@@ -6,7 +6,7 @@
 #include <utility>
 #include <stdexcept>
 #include <variant>
-
+#include <algorithm>
 
 class DataFrame {
 
@@ -65,6 +65,78 @@ public:
 
 
 
+
+	// LOC-alike getter function
+	Cell loc(const std::string col_name, size_t row) {
+		if (row > rows_) {
+			throw std::out_of_range("Row index out of range.");
+		}
+		else if (std::find(columns_.begin(), columns_.end(), col_name) == columns_.end()) {
+			throw std::out_of_range("Column Name cannot be found.");
+		}
+		else {
+			return df_[col_name][row];
+		}
+	}
+
+
+
+	// Modification using .loc
+	void modify_by_loc(std::string& col_name, size_t row, auto new_value) {
+		Cell new_value_cell = new_value; // converting to Cell type
+		if (row > rows_) {
+			throw std::out_of_range("Row index out of range.");
+		}
+		else if (std::find(columns_.begin(), columns_.end(), col_name) == columns_.end()) {
+			throw std::out_of_range("Column Name cannot be found.");
+		}
+		// checking if valid data type 
+		else if (new_value_cell.index() != df_[col_name][0].index()) {
+			throw std::out_of_range("Wrong data type, does not match corresponding column.");
+		} else {
+			df_[col_name][row] = new_value_cell;
+		}
+		}
+
+	// ILOC-alike getter function 
+	Cell iloc(size_t row, size_t col) {
+		if (row > rows_ && col > cols_) {
+			throw std::out_of_range("Row and column index out of range.");
+		}
+		else if (row > rows_) {
+			throw std::out_of_range("Row index out of range.");
+		}
+		else if (col > cols_) {
+			throw std::out_of_range("Column index out of range.");
+		}
+		else {
+
+		}
+		const std::string& col_name = columns_[col];
+		return df_[col_name][row];
+	}
+
+	// Modification using .iloc
+	void modify_by_iloc(size_t row, size_t col, auto new_value) {
+		Cell new_value_cell = new_value; // converting to Cell type
+		if (row > rows_) {
+			throw std::out_of_range("Row index out of range.");
+		}
+		else if (col > cols_) {
+			throw std::out_of_range("Column index out of range.");
+			// checking if valid data type 
+		} else {
+			const std::string& col_name = columns_[col];
+			if (new_value_cell.index() != df_[col_name][0].index()) {
+				throw std::out_of_range("Wrong data type, does not match corresponding column.");
+			}
+			else {
+				df_[col_name][row] = new_value_cell;
+			}
+		}
+		}
+
+	
 
 private:
 

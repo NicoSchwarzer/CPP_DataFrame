@@ -80,18 +80,55 @@ int main() {
     DataFrame df;
 
     // Load CSV file
-    grow_df(df, "example_data.csv"); 
-    
+    grow_df(df, "example_data.csv");
+
     // Print shape
     auto shape = df.get_shape();
     std::cout << "DataFrame shape: (" << shape.first << ", " << shape.second << ")" << std::endl;
 
     // Print headers
+    std::vector <std::string> columns = df.get_columns();
     std::cout << "Columns: ";
-    for (const auto& col : df.get_columns()) {
-        std::cout << col << " ";
+    for (int i = 0; i < columns.size(); i++)   {
+        std::cout << columns[i] << "\n";
     }
+
     std::cout << std::endl;
+
+    // testing iloc feature 
+	auto first_col_first_row = df.iloc(0, 0);
+    std::cout << "First column, first row: ";
+    std::visit([](const auto& v) {
+        std::cout << v; // using lambda function
+        }, first_col_first_row);
+
+    std::cout << std::endl;
+
+	// testing .loc feature
+    auto first_col_by_name_first_entry = df.loc(columns[0], 0);
+	std::cout << "First column by name, first row: ";
+    std::visit([](const auto& a) {
+        std::cout << a << "\n";
+        }, first_col_by_name_first_entry);
+
+	// testing modify features
+
+    // modify by using header string
+    df.modify_by_loc(columns[0], 0, "New Alice");
+    
+    std::cout << "Now the first column by name, first row is : ";
+    std::visit([](const auto& a) {
+        std::cout << a << "\n";
+        }, df.loc(columns[0], 0));
+
+    // modify by using header string
+    df.modify_by_iloc(0, 0, "Very New Alice");
+
+    std::cout << "Now the first column by name, first row is : ";
+    std::visit([](const auto& a) {
+        std::cout << a << "\n";
+        }, df.iloc(0, 0));
+
 
     return 0;
 }
