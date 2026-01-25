@@ -73,7 +73,23 @@ void grow_df(DataFrame& df, const std::string& filename) {
     file.close();
 }
 
-   
+  
+void printCellVector(const std::vector <Cell>& vec) {
+    for (int i = 0; i < vec.size(); i++) {
+        std::visit([](const auto& v) {
+            std::cout << v << " "; // using lambda function
+            }, vec[i]);
+    }
+	std::cout << std::endl;
+}
+
+
+void printAutoScalar(const auto& val) {
+        std::visit([](const auto& v) {
+            std::cout << v << " "; 
+            }, val);
+    std::cout << std::endl;
+    }
 
 int main() {
 
@@ -86,14 +102,25 @@ int main() {
     auto shape = df.get_shape();
     std::cout << "DataFrame shape: (" << shape.first << ", " << shape.second << ")" << std::endl;
 
-    // Print headers
+    // Print index (as aranged array per default)
+    std::cout << "This is the index:\n";
+    printCellVector(df.get_index());
+
+    // New index - using first columns
     std::vector <std::string> columns = df.get_columns();
+    std::vector <Cell> new_index = df.get_column(columns[0]);
+
+	df.set_index(new_index);
+    std::cout << "This is the new index:\n";
+    printCellVector(df.get_index());
+
+
+
+    // Print headers
     std::cout << "Columns: ";
-    for (int i = 0; i < columns.size(); i++)   {
+    for (int i = 0; i < columns.size(); i++) {
         std::cout << columns[i] << "\n";
     }
-
-    std::cout << std::endl;
 
     // testing iloc feature 
 	auto first_col_first_row = df.iloc(0, 0);
@@ -106,10 +133,8 @@ int main() {
 
 	// testing .loc feature
     auto first_col_by_name_first_entry = df.loc(columns[0], 0);
-	std::cout << "First column by name, first row: ";
-    std::visit([](const auto& a) {
-        std::cout << a << "\n";
-        }, first_col_by_name_first_entry);
+    std::cout << "First column by name, first row: ";
+    printAutoScalar(first_col_by_name_first_entry);
 
 	// testing modify features
 
@@ -117,18 +142,13 @@ int main() {
     df.modify_by_loc(columns[0], 0, "New Alice");
     
     std::cout << "Now the first column by name, first row is : ";
-    std::visit([](const auto& a) {
-        std::cout << a << "\n";
-        }, df.loc(columns[0], 0));
+    printAutoScalar(df.loc(columns[0], 0));
 
     // modify by using header string
     df.modify_by_iloc(0, 0, "Very New Alice");
 
     std::cout << "Now the first column by name, first row is : ";
-    std::visit([](const auto& a) {
-        std::cout << a << "\n";
-        }, df.iloc(0, 0));
-
+    printAutoScalar(df.loc(columns[0], 0));
 
     return 0;
 }

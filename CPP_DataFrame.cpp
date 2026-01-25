@@ -21,8 +21,8 @@ public:
 	// Adding a column
 	// but allowing a data type - as in Pandas - so using std::string in data type declaratrion
 	// Passing column vector by reference - avoiding unnecessary copying in memory 
-	template <typename T>
-	void add_column(std::string col_name, std::vector<T>& column) {
+
+	void add_column(std::string col_name, std::vector<Cell>& column) {
 
 		columns_.push_back(col_name);
 		cols_ = columns_.size();
@@ -31,6 +31,10 @@ public:
 		if (df_.empty()) {
 			rows_ = column.size();
 			shape_.first = rows_;
+			// building up the index 
+			for (int i = 0; i < rows_; i++) {
+				index_.push_back(i);
+			}
 
 		}
 		else if (rows_ != column.size()) {
@@ -43,10 +47,23 @@ public:
 
 	}
 
+	// Setting new index 
+	void set_index(std::vector<Cell>& new_index) {
+		if (new_index.size()  != rows_) {
+			throw std::invalid_argument("New index size does not match number of rows in DataFrame.");
+		}
+		index_ = new_index;
+	}
+
 
 	// Getter for shape
 	std::pair<int, int> get_shape() const {
 		return shape_;
+	}
+
+	// Getter for index
+	std::vector <Cell> get_index() {
+		return index_;
 	}
 
 	// Getter for columns (vector containing column names)
@@ -149,6 +166,8 @@ private:
 	size_t rows_ = 0;
 	size_t cols_ = 0;
 	std::vector <std::string> columns_;
+
+	std::vector <Cell> index_;
 
 	// Pandas - alike 'shape', not using tuple since its not editable, but pair 
 	std::pair  <int, int> shape_ = { 0,0 };
